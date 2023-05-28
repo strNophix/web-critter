@@ -10,5 +10,5 @@ export function useInterval(callback: () => void, delay: number) {
   useEffect(() => {
     const id = setInterval(() => ref.current(), delay);
     return () => clearInterval(id);
-  }, []);
+  }, [delay]);
 }

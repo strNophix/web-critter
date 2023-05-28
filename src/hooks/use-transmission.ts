@@ -1,7 +1,7 @@
-import { TransmissionClient } from "@/lib/transmission";
-import { useRef } from "react";
+import { TransmissionContext } from "@/contexts/transmission";
+import { useContext } from "react";
 
 export function useTransmission() {
-  const ref = useRef(new TransmissionClient());
-  return ref.current;
+  const context = useContext(TransmissionContext);
+  return context;
 }

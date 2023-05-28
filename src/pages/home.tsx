@@ -1,10 +1,12 @@
-import { Torrent, columns } from "@/components/torrents/columns";
+import { Torrent, columns, fields } from "@/components/torrents/columns";
 import { DataTable } from "@/components/torrents/data-table";
 import { useTransmission } from "@/hooks/use-transmission";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useInterval } from "@/hooks/use-interval";
+import { Sidebar } from "@/components/sidebar";
+import { env } from "@/lib/env";
 
 interface TorrentGetCmd {
   arguments: { fields: string[] };
@@ -18,23 +20,12 @@ interface TorrentAddCmd {
 
 function Home() {
   const client = useTransmission();
-  const [urlInput, setUrlInput] = useState(
-    "https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-11.7.0-amd64-netinst.iso.torrent"
-  );
+  const [urlInput, setUrlInput] = useState(env.VITE_DEFAULT_TORRENT_ADD ?? "");
   const [tableData, setTableData] = useState<Torrent[]>([]);
 
   useInterval(async () => {
     const resp = await client.call<TorrentGetCmd>("torrent-get", {
-      fields: [
-        "id",
-        "name",
-        "sizeWhenDone",
-        "status",
-        "rateDownload (B/s)",
-        "rateUpload (B/s)",
-        "eta",
-        "uploadRatio",
-      ],
+      fields: fields,
     });
     setTableData(resp.arguments.torrents);
   }, 10000);
@@ -46,18 +37,21 @@ function Home() {
   };
 
   return (
-    <div>
-      <DataTable columns={columns} data={tableData} />
-      <div className="flex">
-        <Input
-          type="url"
-          placeholder=".torrent URL"
-          value={urlInput}
-          onChange={(e) => setUrlInput(e.target.value)}
-        />
-        <Button variant="outline" onClick={downloadTorrent}>
-          Download
-        </Button>
+    <div className="flex">
+      <Sidebar className="w-64" />
+      <div className="flex-1 container">
+        <div className="flex">
+          <Input
+            type="url"
+            placeholder=".torrent URL"
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+          />
+          <Button variant="outline" onClick={downloadTorrent}>
+            Download
+          </Button>
+        </div>
+        <DataTable columns={columns} data={tableData} />
       </div>
     </div>
   );

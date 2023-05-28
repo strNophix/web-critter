@@ -1,6 +1,15 @@
-import Home from "./pages/home";
+import { useTransmission } from "@/hooks/use-transmission";
+import Home from "@/pages/home";
+import Login from "@/pages/login";
 
 function App() {
+  const { isLoggedIn } = useTransmission();
+  console.log(import.meta.env.HELLO);
+
+  if (isLoggedIn === false) {
+    return <Login />;
+  }
+
   return <Home />;
 }
 
