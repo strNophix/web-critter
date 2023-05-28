@@ -4,7 +4,6 @@ import Login from "@/pages/login";
 
 function App() {
   const { isLoggedIn } = useTransmission();
-  console.log(import.meta.env.HELLO);
 
   if (isLoggedIn === false) {
     return <Login />;
